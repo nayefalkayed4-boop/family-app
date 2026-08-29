@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="beige">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Family App</title>
+  <link rel="stylesheet" href="css/apple-theme.css">
+</head>
+<body>
+
+  <!-- In-App Notification Banner Toast -->
+  <div id="in-app-toast">
+    <div style="font-size:24px;">💬</div>
+    <div style="flex:1;min-width:0;">
+      <div id="toast-title" style="font-size:13px;font-weight:700;color:var(--text-primary);">Family App</div>
+      <div id="toast-body" style="font-size:12px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">رسالة جديدة</div>
+    </div>
+  </div>
+
+  <!-- 1. Apple-Style Splash Welcome Screen -->
+  <div id="splash-screen">
+    <div class="apple-logo-badge">
+      <!-- Black & Grey Message Bubble with Cursive Beige F -->
+      <svg class="logo-bubble-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bubbleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2D2D30"/>
+            <stop offset="100%" stop-color="#121214"/>
+          </linearGradient>
+          <filter id="glow3D" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+          </filter>
+        </defs>
+        <!-- Sleek Message Bubble Body -->
+        <rect x="10" y="10" width="80" height="70" rx="22" fill="url(#bubbleGrad)" filter="url(#glow3D)" stroke="rgba(230,213,184,0.3)" stroke-width="1.5"/>
+        <path d="M28 80 L20 92 L42 80 Z" fill="#121214" stroke="rgba(230,213,184,0.3)" stroke-width="1"/>
+        <!-- Cursive Beige 'F' -->
+        <text x="50" y="58" font-family="'Great Vibes', 'Playfair Display', cursive" font-size="52" font-style="italic" fill="#E6D5B8" text-anchor="middle" font-weight="bold">F</text>
+      </svg>
+    </div>
+    
+    <div class="splash-brand-title">Family App</div>
+    <div class="splash-welcome-text">hello • مرحباً</div>
+    <p style="font-size: 13px; color: var(--text-secondary); max-width: 280px; margin-bottom: 24px; line-height: 1.5;" data-i18n="welcomeSub">
+      تواصل دافئ ومحادثات آمنة لجميع أفراد الأسرة
+    </p>
+
+    <div class="splash-progress-bar">
+      <div class="splash-progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div id="app-container">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-title-group">
+        <h1 data-i18n="appName">Family App</h1>
+        <span class="header-subtitle">مجلس العائلة والمحادثات</span>
+      </div>
+      <div class="header-actions">
+        <!-- Quick Switch Language -->
+        <button class="icon-btn" id="btn-quick-lang" title="Toggle Language" onclick="window.i18n.setLang(window.i18n.lang === 'ar' ? 'en' : 'ar')">
+          <span style="font-size: 13px; font-weight: 800;">EN/ع</span>
+        </button>
+        <!-- Quick Switch Theme -->
+        <button class="icon-btn" id="btn-quick-theme" title="Toggle Theme" onclick="window.appStorage.setTheme(window.appStorage.getTheme() === 'beige' ? 'dark' : 'beige')">
+          <span style="font-size: 16px;">🌓</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 1. Chats View -->
+    <div class="view-container active" id="view-chats">
+      <!-- Stories / Status Strip -->
+      <div class="stories-strip-wrapper">
+        <div class="stories-strip" id="stories-strip"></div>
+      </div>
+
+      <!-- Chat List -->
+      <div class="chat-list-group" id="chat-list-container"></div>
+
+      <!-- Floating Action Button for New Group -->
+      <button class="fab-new-chat" id="fab-new-group" title="New Group">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#121214" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <line x1="19" y1="8" x2="19" y2="14"></line>
+          <line x1="22" y1="11" x2="16" y2="11"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 2. Calls View -->
+    <div class="view-container" id="view-calls">
+      <div style="padding: 16px 16px 8px 16px;">
+        <h2 style="font-size: 18px; font-weight: 700;" data-i18n="calls">المكالمات</h2>
+      </div>
+      <div class="chat-list-group" id="calls-list-container"></div>
+    </div>
+
+    <!-- 3. Status View -->
+    <div class="view-container" id="view-status">
+      <div style="padding: 16px 16px 8px 16px;">
+        <h2 style="font-size: 18px; font-weight: 700;" data-i18n="status">الحالات</h2>
+      </div>
+      <div style="padding: 0 14px 14px 14px;">
+        <div class="chat-card-item" id="status-my-story-card"></div>
+        <div style="font-size: 13px; font-weight: 600; color: var(--text-secondary); margin: 16px 4px 8px 4px;" data-i18n="recentUpdates">
+          آخر الحالات
+        </div>
+        <div id="status-recent-list"></div>
+      </div>
+    </div>
+
+    <!-- 4. Settings View -->
+    <div class="view-container" id="view-settings">
+      <div style="padding: 18px 16px 100px 16px;">
+        <!-- Profile Card -->
+        <div style="background: var(--bg-card); border-radius: var(--radius-lg); padding: 18px; border: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 14px; margin-bottom: 18px;">
+          <img id="settings-profile-avatar" src="" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-gold);" />
+          <div style="flex: 1; min-width: 0;">
+            <div id="settings-profile-name" style="font-size: 17px; font-weight: 700;">نايف الكايد</div>
+            <div id="settings-profile-bio" style="font-size: 12px; color: var(--text-secondary); margin: 2px 0;">أحب عائلتي دائماً وأبداً ✨</div>
+            <div id="settings-profile-email" style="font-size: 11px; color: var(--accent-gold);">nayefalkayed4@gmail.com</div>
+          </div>
+          <button class="icon-btn" id="btn-edit-profile" title="Edit Profile">✏️</button>
+        </div>
+
+        <!-- Google Sign-In Card -->
+        <div style="background: var(--bg-card); border-radius: var(--radius-md); padding: 16px; border: 1px solid var(--border-subtle); margin-bottom: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-size: 15px; font-weight: 700;" data-i18n="googleSignIn">تسجيل الدخول عبر Google</div>
+              <div style="font-size: 11px; color: var(--text-secondary);" data-i18n="googleSignedDesc">مجهز للربط الفوري مع Firebase Google Auth</div>
+            </div>
+            <button class="icon-btn" id="btn-google-sign-in" style="width: auto; padding: 0 14px; border-radius: 20px; font-size: 12px; font-weight: 700; gap: 6px;">
+              <span>G</span> <span>Login</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Theme Mode Selector -->
+        <div style="background: var(--bg-card); border-radius: var(--radius-md); padding: 16px; border: 1px solid var(--border-subtle); margin-bottom: 14px;">
+          <label class="input-label" data-i18n="themeMode">مظهر التطبيق</label>
+          <select id="select-app-theme" class="apple-input-text" style="cursor: pointer;">
+            <option value="beige" data-i18n="beigeTheme">النمط البيج المموج (Luxury Beige)</option>
+            <option value="dark" data-i18n="darkTheme">النمط الداكن (Obsidian Dark)</option>
+          </select>
+        </div>
+
+        <!-- Language Selector -->
+        <div style="background: var(--bg-card); border-radius: var(--radius-md); padding: 16px; border: 1px solid var(--border-subtle); margin-bottom: 14px;">
+          <label class="input-label" data-i18n="language">اللغة</label>
+          <select id="select-app-lang" class="apple-input-text" style="cursor: pointer;">
+            <option value="ar">العربية (Arabic - RTL)</option>
+            <option value="en">English (الإنجليزية - LTR)</option>
+          </select>
+        </div>
+
+        <!-- Web Push Notifications -->
+        <div style="background: var(--bg-card); border-radius: var(--radius-md); padding: 16px; border: 1px solid var(--border-subtle); margin-bottom: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-size: 15px; font-weight: 700;" data-i18n="notifications">إشعارات التطبيق</div>
+              <div style="font-size: 11px; color: var(--text-secondary);" data-i18n="enablePush">تفعيل التنبيهات الفورية (Web Push)</div>
+            </div>
+            <button class="icon-btn" id="btn-enable-push-notifications" style="font-size: 16px;">🔔</button>
+          </div>
+        </div>
+
+        <!-- External Service Integration Blueprint Info -->
+        <div style="background: rgba(212, 175, 55, 0.08); border-radius: var(--radius-md); padding: 14px; border: 1px dashed var(--accent-gold);">
+          <div style="font-size: 13px; font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">جاهزية الربط الخارجي 🔌</div>
+          <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.5;">
+            مهيأ بشكل كامل مع وحدات (Firebase Auth, Firestore, Cloud Storage, WebRTC/Agora للمكالمات) - كل ما يلزم هو تزويد المفاتيح في ملفات الخدمة.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Active Conversation View (Slide in) -->
+    <div id="active-chat-view">
+      <div class="chat-room-header">
+        <button class="icon-btn" id="btn-close-chat" title="Back" style="border:none;background:transparent;box-shadow:none;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="chat-room-user-summary">
+          <img id="chat-room-avatar" src="" alt="Avatar" />
+          <div>
+            <div class="chat-room-title" id="chat-room-name">اسم المحادثة</div>
+            <div class="chat-room-status" id="chat-room-status">متصل الآن</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button class="icon-btn" id="btn-call-audio-chat" title="Audio Call">📞</button>
+          <button class="icon-btn" id="btn-call-video-chat" title="Video Call">📹</button>
+          <button class="icon-btn" id="btn-chat-wallpaper-settings" title="Change Wallpaper">🎨</button>
+        </div>
+      </div>
+
+      <!-- Messages Stream -->
+      <div class="chat-messages-container" id="chat-messages-container"></div>
+
+      <!-- Input Bar -->
+      <div class="chat-input-bar">
+        <button class="icon-btn" id="btn-chat-attach" title="Attach Media" style="border:none;background:transparent;box-shadow:none;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+          </svg>
+        </button>
+
+        <div class="recording-bar-overlay" id="recording-bar-overlay">
+          <div class="recording-indicator">
+            <div class="recording-dot"></div>
+            <span id="recording-time-display">00:00</span>
+          </div>
+          <button id="btn-cancel-recording" style="background:none;border:none;color:var(--text-secondary);font-size:12px;font-weight:bold;cursor:pointer;" data-i18n="cancel">
+            إلغاء
+          </button>
+        </div>
+
+        <input type="text" id="chat-input-box" class="chat-input-box" placeholder="اكتب رسالة..." data-i18n-placeholder="typeMessage" />
+        
+        <button class="icon-btn" id="btn-voice-record" title="Voice Note" style="border:none;background:transparent;box-shadow:none;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </button>
+
+        <button class="btn-send-msg" id="btn-send-msg" title="Send">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#121214" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="app-bottom-nav">
+      <div class="nav-tab-item active" data-tab="tab-chats">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span class="nav-tab-label" data-i18n="chats">المحادثات</span>
+      </div>
+
+      <div class="nav-tab-item" data-tab="tab-calls">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+        </svg>
+        <span class="nav-tab-label" data-i18n="calls">المكالمات</span>
+      </div>
+
+      <div class="nav-tab-item" data-tab="tab-status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span class="nav-tab-label" data-i18n="status">الحالات</span>
+      </div>
+
+      <div class="nav-tab-item" data-tab="tab-settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span class="nav-tab-label" data-i18n="settings">الإعدادات</span>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Audio & Video Calling Screen Modal -->
+  <div id="call-screen-modal">
+    <div class="call-header-info">
+      <div class="call-avatar-pulse-container">
+        <div class="call-pulse-ring"></div>
+        <img id="call-modal-avatar" class="call-avatar-img" src="" alt="Caller" />
+      </div>
+      <div class="call-caller-name" id="call-modal-name">أمي الحبيبة (Mom)</div>
+      <div class="call-status-label" id="call-modal-status">جاري الاتصال...</div>
+    </div>
+
+    <!-- Video Stream Grid -->
+    <div class="call-video-grid" id="call-modal-videogrid"></div>
+
+    <!-- Controls -->
+    <div class="call-bottom-controls">
+      <button class="call-btn" id="btn-call-mute" title="Mute">🎤</button>
+      <button class="call-btn" id="btn-call-video" title="Video">📹</button>
+      <button class="call-btn" id="btn-call-speaker" title="Speaker">🔊</button>
+      <button class="call-btn hangup" id="btn-call-hangup" title="End Call">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"></path>
+          <line x1="23" y1="1" x2="1" y2="23"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Story Viewer Modal -->
+  <div id="story-viewer-modal">
+    <div id="story-progress-row" class="story-progress-row"></div>
+    <div class="story-header-info">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <img id="story-viewer-user-avatar" src="" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;" />
+        <div>
+          <div id="story-viewer-user-name" style="font-size: 14px; font-weight: 700;">اسم الناشر</div>
+          <div id="story-viewer-time" style="font-size: 11px; opacity: 0.75;">منذ ساعة</div>
+        </div>
+      </div>
+      <button class="icon-btn" id="btn-close-story" style="background: rgba(255,255,255,0.2); border: none; color: #FFF;">✕</button>
+    </div>
+
+    <div class="story-content-body">
+      <img id="story-viewer-img" src="" alt="Story Media" />
+      <div class="story-caption-overlay" id="story-viewer-caption"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Create New Group with Image Picker -->
+  <div class="apple-modal-overlay" id="modal-new-group">
+    <div class="apple-bottom-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title" data-i18n="newGroup">إنشاء مجموعة جديدة</div>
+      
+      <!-- Group Avatar Picker -->
+      <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 16px;">
+        <div style="position: relative; width: 80px; height: 80px; margin-bottom: 8px;">
+          <img id="preview-group-avatar" src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=150&auto=format&fit=crop&q=80" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-gold);" />
+          <label for="input-group-avatar" style="position: absolute; bottom: 0; right: 0; background: var(--accent-gold); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #000; font-size: 12px; font-weight: bold;">📷</label>
+          <input type="file" id="input-group-avatar" accept="image/*" style="display: none;" />
+        </div>
+        <span style="font-size: 12px; color: var(--text-secondary);" data-i18n="chooseGroupImage">اختيار صورة للمجموعة</span>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" data-i18n="groupName">اسم المجموعة</label>
+        <input type="text" id="input-group-name" class="apple-input-text" placeholder="مثال: عائلة آل فلان" data-i18n-placeholder="groupNamePlaceholder" />
+      </div>
+
+      <button class="apple-primary-btn" id="btn-submit-create-group" data-i18n="createGroup">إنشاء المجموعة</button>
+    </div>
+  </div>
+
+  <!-- Modal: Attach Media (Photos, Docs, Location) -->
+  <div class="apple-modal-overlay" id="modal-media-attach">
+    <div class="apple-bottom-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title" data-i18n="mediaAttach">إرفاق وسائط</div>
+      
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0;">
+        <label for="input-file-photo" style="display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; padding: 14px; background: var(--bg-secondary); border-radius: var(--radius-md);">
+          <span style="font-size: 28px;">🖼️</span>
+          <span style="font-size: 12px; font-weight: 600;" data-i18n="photoVideo">صور وفيديوهات</span>
+          <input type="file" id="input-file-photo" accept="image/*,video/*" style="display: none;" />
+        </label>
+
+        <label for="input-file-doc" style="display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; padding: 14px; background: var(--bg-secondary); border-radius: var(--radius-md);">
+          <span style="font-size: 28px;">📄</span>
+          <span style="font-size: 12px; font-weight: 600;" data-i18n="document">مستند / PDF</span>
+          <input type="file" id="input-file-doc" accept=".pdf,.doc,.docx,.zip,.txt" style="display: none;" />
+        </label>
+
+        <div id="btn-send-location" style="display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; padding: 14px; background: var(--bg-secondary); border-radius: var(--radius-md);">
+          <span style="font-size: 28px;">📍</span>
+          <span style="font-size: 12px; font-weight: 600;" data-i18n="location">موقعي</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Chat Wallpaper Picker -->
+  <div class="apple-modal-overlay" id="modal-chat-wallpaper">
+    <div class="apple-bottom-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title" data-i18n="changeWallpaper">تخصيص خلفية هذه المحادثة</div>
+      <div class="wallpaper-grid" id="wallpaper-selection-grid"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Story -->
+  <div class="apple-modal-overlay" id="modal-add-story">
+    <div class="apple-bottom-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title" data-i18n="addStory">إضافة حالة جديدة</div>
+      
+      <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 14px;">
+        <img id="preview-story-media" src="" style="width: 100%; max-height: 180px; border-radius: var(--radius-md); object-fit: cover; display: none; margin-bottom: 10px;" />
+        <label for="input-story-media" style="display: inline-block; padding: 10px 18px; background: var(--bg-secondary); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer;">
+          📷 <span data-i18n="uploadPhoto">رفع صورة للحالة</span>
+        </label>
+        <input type="file" id="input-story-media" accept="image/*" style="display: none;" />
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" data-i18n="storyCaptionPlaceholder">تعليق على الحالة</label>
+        <input type="text" id="input-story-caption" class="apple-input-text" placeholder="اكتب تعليقاً على حالتك..." data-i18n-placeholder="storyCaptionPlaceholder" />
+      </div>
+
+      <button class="apple-primary-btn" id="btn-publish-story" data-i18n="publishStory">نشر الحالة</button>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Profile -->
+  <div class="apple-modal-overlay" id="modal-edit-profile">
+    <div class="apple-bottom-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title" data-i18n="profile">تعديل الملف الشخصي</div>
+      
+      <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 16px;">
+        <div style="position: relative; width: 80px; height: 80px; margin-bottom: 8px;">
+          <img id="preview-edit-profile-avatar" src="" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-gold);" />
+          <label for="input-edit-profile-file" style="position: absolute; bottom: 0; right: 0; background: var(--accent-gold); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #000; font-size: 12px; font-weight: bold;">📷</label>
+          <input type="file" id="input-edit-profile-file" accept="image/*" style="display: none;" />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" data-i18n="displayName">الاسم المعروض</label>
+        <input type="text" id="input-edit-profile-name" class="apple-input-text" />
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" data-i18n="statusBio">النبذة / الحالة</label>
+        <input type="text" id="input-edit-profile-bio" class="apple-input-text" />
+      </div>
+
+      <button class="apple-primary-btn" id="btn-save-profile" data-i18n="save">حفظ</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/i18n.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/calls-service.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

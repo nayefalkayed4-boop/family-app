@@ -1,0 +1,6 @@
+{
+  "name": "Family App",
+  "description": "A luxury Apple-inspired family messaging and communication suite with voice notes, group chats, video calls, stories, and theme customizations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
